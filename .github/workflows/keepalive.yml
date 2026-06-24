@@ -1,0 +1,18 @@
+name: keep-spaces-awake
+# Пингует HF Spaces, чтобы бесплатный тариф не усыплял их (иначе клиент видит "Preparing Space").
+on:
+  schedule:
+    - cron: "23 */6 * * *"   # каждые 6 часов
+  workflow_dispatch:           # можно запускать вручную
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping live demos
+        run: |
+          for u in \
+            "https://memnikfff-test-bot1.hf.space" \
+            "https://nenbuj-we-superapp.hf.space"; do
+            echo "ping $u"
+            curl -s -m 90 -o /dev/null -w "  -> %{http_code}\n" "$u/" || true
+          done
